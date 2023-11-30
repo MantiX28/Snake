@@ -2,6 +2,8 @@ from __future__ import annotations
 import pygame
 import time
 import random
+
+pygame.init()
 pygame.font.init()
 
 
