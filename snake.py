@@ -67,7 +67,15 @@ class Snake:
 						return False
 		
 		# check if snake hits the sides
-		if self.first_part.y < 0 or self.first_part.y + Part.HEIGHT > SCREEN_HEIGHT or self.first_part.x <= 0 or self.first_part.x + Part.WIDTH > SCREEN_WIDTH:
+		#if self.first_part.y < 0 or self.first_part.y + Part.HEIGHT > SCREEN_HEIGHT or self.first_part.x < 0 or self.first_part.x + Part.WIDTH > SCREEN_WIDTH:
+		#	return False
+		if self.first_part.y == 0 and self.direction == 'u':
+			return False
+		if self.first_part.y + Part.HEIGHT == SCREEN_HEIGHT and self.direction == 'd':
+			return False
+		if self.first_part.x == 0 and self.direction == 'l':
+			return False
+		if self.first_part.x + Part.WIDTH == SCREEN_WIDTH and self.direction == 'r':
 			return False
 		
 		return True
@@ -211,18 +219,18 @@ def main():
 	clock = pygame.time.Clock()
 	while game_runs:
 		clock.tick(GAME_FPS)
-		
-		if not mysnake.collide_check():
-			mysnake.lose()
-			break
-		
+				
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game_runs = False
 
 			if event.type == pygame.KEYDOWN:
 				mysnake.move(event.key)
-	
+		
+		if not mysnake.collide_check():
+			mysnake.lose()
+			break
+
 		mysnake.handle_movement()		
 		mysnake.check_food()
 
