@@ -67,8 +67,6 @@ class Snake:
 						return False
 		
 		# check if snake hits the sides
-		#if self.first_part.y < 0 or self.first_part.y + Part.HEIGHT > SCREEN_HEIGHT or self.first_part.x < 0 or self.first_part.x + Part.WIDTH > SCREEN_WIDTH:
-		#	return False
 		if self.first_part.y == 0 and self.direction == 'u':
 			return False
 		if self.first_part.y + Part.HEIGHT == SCREEN_HEIGHT and self.direction == 'd':
