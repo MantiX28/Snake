@@ -22,14 +22,14 @@ class Snake:
 		return self.parts[-1]	
 
 	def eat(self) -> None:	
-		if (d := self.last_part.direction) == 'u':
-			new_part = Part(self.last_part.x, self.last_part.y + Part.HEIGHT, d, self.last_color)
-		if (d := self.last_part.direction) == 'r':
-			new_part = Part(self.last_part.x - Part.WIDTH, self.last_part.y, d, self.last_color)
-		if (d := self.last_part.direction) == 'l':
-			new_part = Part(self.last_part.x + Part.WIDTH, self.last_part.y, d, self.last_color)
-		if (d := self.last_part.direction) == 'd':
-			new_part = Part(self.last_part.x, self.last_part.y - Part.HEIGHT, d, self.last_color)
+		if (dir := self.last_part.direction) == 'u':
+			new_part = Part(self.last_part.x, self.last_part.y + Part.HEIGHT, dir, self.last_color)
+		if dir == 'r':
+			new_part = Part(self.last_part.x - Part.WIDTH, self.last_part.y, dir, self.last_color)
+		if dir == 'l':
+			new_part = Part(self.last_part.x + Part.WIDTH, self.last_part.y, dir, self.last_color)
+		if dir == 'd':
+			new_part = Part(self.last_part.x, self.last_part.y - Part.HEIGHT, dir, self.last_color)
 		for move in self.last_part.moves:
 			new_part.moves.append(move)
 		self.parts.append(new_part)
