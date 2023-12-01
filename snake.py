@@ -221,6 +221,8 @@ def main():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game_runs = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				game_runs = False
 
 			if event.type == pygame.KEYDOWN:
 				mysnake.move(event.key)
