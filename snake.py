@@ -11,7 +11,10 @@ class Snake:
 	def __init__(self) -> None:		
 		self.direction: str = DIRECTIONS['UP']
 		self.parts: list[Part] = [Part(SCREEN_WIDTH/2 - Part.WIDTH/2, SCREEN_HEIGHT/2 - Part.HEIGHT/2, self.direction,YELLOW)]
-		self.last_color = WHITE		
+		self.last_color = WHITE
+		
+		self.add_part()
+		self.add_part()
 
 	@property
 	def first_part(self) -> Part:
@@ -19,9 +22,9 @@ class Snake:
 	
 	@property
 	def last_part(self) -> Part:
-		return self.parts[-1]	
+		return self.parts[-1] 
 
-	def eat(self) -> None:	
+	def add_part(self) -> None:
 		if (dir := self.last_part.direction) == 'u':
 			new_part = Part(self.last_part.x, self.last_part.y + Part.HEIGHT, dir, self.last_color)
 		if dir == 'r':
@@ -39,9 +42,10 @@ class Snake:
 		else:
 			self.last_color = RED
 		
-		del self.food
-		del self.food_timer
-		self._reset_time()
+		if hasattr(self, "food"):
+			del self.food
+			del self.food_timer
+			self._reset_time()
 
 	def draw_parts(self) -> None:
 		if hasattr(self, "food"):
@@ -53,11 +57,11 @@ class Snake:
 	def draw_lenght(self):
 		GAME_WINDOW.blit(pygame.font.SysFont("comicsans",25).render(str(len(self.parts)),1, WHITE), (10,10))
 	
-	def collide_check(self) -> bool:
+	def collision_check(self) -> bool:
 		# check if snake eats food
 		if hasattr(self, 'food'):
 			if self.first_part.colliderect(self.food):
-				self.eat()
+				self.add_part()
 		
 		# check if snake hits itself
 		for part1 in self.parts:
@@ -67,13 +71,13 @@ class Snake:
 						return False
 		
 		# check if snake hits the sides
-		if self.first_part.y == 0 and self.direction == 'u':
+		if self.first_part.y <= 0 and self.direction == 'u':
 			return False
-		if self.first_part.y + Part.HEIGHT == SCREEN_HEIGHT and self.direction == 'd':
+		if self.first_part.y + Part.HEIGHT >= SCREEN_HEIGHT and self.direction == 'd':
 			return False
-		if self.first_part.x == 0 and self.direction == 'l':
+		if self.first_part.x <= 0 and self.direction == 'l':
 			return False
-		if self.first_part.x + Part.WIDTH == SCREEN_WIDTH and self.direction == 'r':
+		if self.first_part.x + Part.WIDTH >= SCREEN_WIDTH and self.direction == 'r':
 			return False
 		
 		return True
@@ -165,7 +169,8 @@ class Snake:
 
 	@staticmethod
 	def lose() -> None:
-		text = pygame.font.SysFont("comicsans",40).render("YOU LOST!", 1, WHITE)
+		font = pygame.font.SysFont("comicsans",30)
+		text = font.render("YOU LOST!", 1, WHITE)
 		GAME_WINDOW.blit(text, (SCREEN_WIDTH/2 - text.get_width()/2, SCREEN_HEIGHT/2 - text.get_height()/2))
 		pygame.display.update()
 		pygame.time.delay(5000)
@@ -174,9 +179,9 @@ class Snake:
 
 class Part(pygame.Rect):
 	WIDTH, HEIGHT = 10, 10
-	def __init__(self, left: float, top: float, direction, color):
+	def __init__(self, left: float, top: float, direction: str, color: tuple[int, int, int]) -> None:
 		super().__init__(left, top, Part.WIDTH, Part.HEIGHT)
-		self.moves: list[tuple[DIRECTIONS.values(), int, int]] = list()
+		self.moves: list[tuple[str, int, int]] = list()
 		self.direction = direction
 		self.color = color
 
@@ -199,15 +204,14 @@ GAME_FPS = 10
 BLACK = (0,0,0)
 WHITE = (230, 227, 227)
 RED = (255,0,0)
-#BLUE = (0,50,255)
 YELLOW = (209, 206, 6)
 
 mysnake = Snake()
 
 def draw():
 	GAME_WINDOW.fill(BLACK)
-	mysnake.draw_lenght()
 	mysnake.draw_parts()
+	mysnake.draw_lenght()
 	
 	pygame.display.update()
 	
@@ -219,15 +223,13 @@ def main():
 		clock.tick(GAME_FPS)
 				
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				game_runs = False
-			if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-				game_runs = False
+			if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+				game_runs = False				
 
 			if event.type == pygame.KEYDOWN:
 				mysnake.move(event.key)
 		
-		if not mysnake.collide_check():
+		if not mysnake.collision_check():
 			mysnake.lose()
 			break
 
