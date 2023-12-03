@@ -2,4 +2,4 @@
 Snake Game Made With `Pygame`.
 
 # requirements
-pygame module
+pygame module.
