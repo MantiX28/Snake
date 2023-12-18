@@ -16,6 +16,8 @@ class Snake:
 		self.add_part()
 		self.add_part()
 
+		self._kd_time = time.time()
+
 	@property
 	def first_part(self) -> Part:
 		return self.parts[0]
@@ -83,17 +85,19 @@ class Snake:
 		return True
 		
 	def move(self, p_move) -> None:		
-		if p_move == pygame.K_UP and self.direction not in [DIRECTIONS['UP'], DIRECTIONS['DOWN']]:
-			self.direction = DIRECTIONS['UP']
-		if p_move == pygame.K_RIGHT and self.direction not in [DIRECTIONS['RIGTH'], DIRECTIONS['LEFT']]:
-			self.direction = DIRECTIONS['RIGTH']
-		if p_move == pygame.K_DOWN and self.direction not in [DIRECTIONS['UP'], DIRECTIONS['DOWN']]:
-			self.direction = DIRECTIONS['DOWN']
-		if p_move == pygame.K_LEFT and self.direction not in [DIRECTIONS['RIGTH'], DIRECTIONS['LEFT']]:
-			self.direction = DIRECTIONS['LEFT']
+		if time.time() - self._kd_time >= 0.1:
+			self._kd_time = time.time()
+			if p_move == pygame.K_UP and self.direction not in [DIRECTIONS['UP'], DIRECTIONS['DOWN']]:
+				self.direction = DIRECTIONS['UP']
+			if p_move == pygame.K_RIGHT and self.direction not in [DIRECTIONS['RIGTH'], DIRECTIONS['LEFT']]:
+				self.direction = DIRECTIONS['RIGTH']
+			if p_move == pygame.K_DOWN and self.direction not in [DIRECTIONS['UP'], DIRECTIONS['DOWN']]:
+				self.direction = DIRECTIONS['DOWN']
+			if p_move == pygame.K_LEFT and self.direction not in [DIRECTIONS['RIGTH'], DIRECTIONS['LEFT']]:
+				self.direction = DIRECTIONS['LEFT']
 		
-		for part in self.parts:
-			part.moves.append((self.direction, self.first_part.x, self.first_part.y))
+			for part in self.parts:
+				part.moves.append((self.direction, self.first_part.x, self.first_part.y))
 		
 	def handle_movement(self):
 		for part in self.parts:
@@ -118,7 +122,7 @@ class Snake:
 			if not hasattr(self, "g_time"):
 				self.g_time = time.time()
 			if not hasattr(self, "cooldown"):
-				self.cooldown = 5
+				self.cooldown = 1
 			if time.time() - self.g_time >= self.cooldown:				
 				if self.direction in ['u', 'd']:
 					min_x = self.first_part.x
